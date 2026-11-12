@@ -1,0 +1,13 @@
+# This project was built and tested against Hayavega's `main` branch
+# (github.com/P-Sudhakar-tech/HayaVega), not the published PyPI v0.1.0
+# release -- main includes fixes (the manage.py scaffold fix, default
+# admin wiring, the static_file performance fix, SO_REUSEPORT scaling,
+# Settings.server.workers/processes) that v0.1.0 predates. See
+# ../FINDINGS.md and this project's own README.md for why.
+#
+# To match this build exactly:
+#   pip install -e "git+https://github.com/P-Sudhakar-tech/HayaVega.git#egg=hayavega"
+#
+# To use the published release instead (simpler, but the scaffold bug
+# above is present until the next PyPI release):
+#   hayavega
