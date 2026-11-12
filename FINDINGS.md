@@ -4,7 +4,20 @@ Built 2026-11-12 against Hayavega `main` (commit `35e03cc`). Every number
 below is measured directly on this machine, not estimated -- the methodology
 for each is included so it can be re-run.
 
-## 1. CRITICAL -- the rate limiter's default security layer has a severe, quantified O(n) scaling bug
+## 1. ~~CRITICAL~~ FIXED UPSTREAM 2026-11-12 -- the rate limiter's default security layer had a severe, quantified O(n) scaling bug
+
+**Status: fixed in Hayavega `main` the same day this was found** --
+[P-Sudhakar-tech/HayaVega#22](https://github.com/P-Sudhakar-tech/HayaVega/pull/22),
+merged as commit `006be20`. `_prune()` now scans at most 8 entries per
+call, from the front of the LRU order, instead of every tracked client.
+Re-measured after the fix: **2,757.8 µs → 1.1 µs per call** with 10,000
+tracked clients -- matching the one-tracked-client baseline, a ~2,500x
+improvement. A new regression test
+(`test_allow_cost_does_not_scale_with_the_number_of_tracked_clients` in
+Hayavega's `tests/test_hardening.py`) pins this going forward. The
+original finding, as discovered, is kept below unedited -- this is what
+building something real on Hayavega surfaced, and why it's worth
+building real things on frameworks early.
 
 `hayavega.hardening.RateLimiter.allow()` calls `self._prune(now)` on
 **every single call**, which iterates **every currently-tracked client
